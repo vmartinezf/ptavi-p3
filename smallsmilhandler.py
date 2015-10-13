@@ -24,8 +24,12 @@ class SmallSMILHandler(ContentHandler):
         self.textstream = ""
         self.inTextstream = 0
 
-    def get_tags(self):
-        ""
+    def get_tags(self, name, lista_etiquetas, atributo):
+        """
+        Método que se llama para alamacenar las etiquetas,
+        los atributos y su contenido
+        """
+        lista_etiquetas.append = ('')
 
     def startElement(self, name, attrs):
         """
@@ -78,6 +82,7 @@ if __name__ == "__main__":
     """
     Programa principal
     """
+    lista_etiquetas = []
     parser = make_parser()
     cHandler = SmallSMILHandler()
     parser.setContentHandler(cHandler)
