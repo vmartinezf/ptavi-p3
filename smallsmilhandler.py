@@ -14,7 +14,9 @@ class SmallSMILHandler(ContentHandler):
         """
         Constructor. Inicializamos las variables
         """
-        self.rootlayout = ""
+        self.width = ""
+        self.height = ""
+        self.backgroundcolor = ""
         self.region = ""
         self.inRegion = 0
         self.img = ""
@@ -37,7 +39,11 @@ class SmallSMILHandler(ContentHandler):
         """
         if name == 'root-layout':
             # De esta manera tomamos los valores de los atributos
-            self.rootlayout = attrs.get('width', "")  # FALTA ALGO
+            self.width = attrs.get('width', "")  # FALTA ALGO
+            self.height = attrs.get('height', "")
+            self.backgroundcolor = attrs.get('backgroundcolor', "")
+            print(self.width)
+            print (self.backgroundcolor)
         elif name == 'region':
             self.inRegion = 1
         elif name == 'img':
