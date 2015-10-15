@@ -9,27 +9,27 @@ from smallsmilhandler import SmallSMILHandler
 
 def guardar_linea_atributos(dic, line):
     for elemento in dic:
-        line = line + elemento    
+        line = line + elemento
         for dicelement in dic[elemento]:
             x = dic[elemento]
             if (x[dicelement] != ""):
-                linea = '\t' + dicelement + '=' + '"' + x[dicelement]+ '"'
+                linea = '\t' + dicelement + '=' + '"' + x[dicelement] + '"'
                 line = line + linea
     return line
-    
+
 
 def guardar_linea(lista_etiquetas, line):
     for dic in lista_etiquetas:
         line = guardar_linea_atributos(dic, line)
         line = line + '\n'
     return line
-    
+
 
 def imprimir(lista_etiquetas):
     line = ""
     linea = guardar_linea(lista_etiquetas, line)
     print (linea)
-     
+
 
 if __name__ == "__main__":
     try:
