@@ -9,63 +9,50 @@ from smallsmilhandler import SmallSMILHandler
 from urllib.request import urlretrieve, urlcleanup
 
 
-def convert_local(lista_etiquetas, dicelement, value):
-    if (dicelement == "src" and value != "cancion.ogg"):
-        URL = value
-        filename = URL[URL.rfind("/") + 1:]
-        data = urlretrieve(URL, filename)
-        urlcleanup()
-        value = "http://" + data[0]
-    return value
+class KaraokeLocal(SmallSMILHandler):
 
+    def __init__(self, fichero):
+        """
+        Parseará el fichero y obtendrá etiquetas
+        """
+        parser = make_parser()
+        cHandler = SmallSMILHandler()
+        parser.setContentHandler(cHandler)
+        parser.parse(open(fichero))
+        self.lista_etiq = cHandler.get_tags()
 
-def line_atributo_valor(line, dicelement, value):
-    if (value != ""):
-        linea = '\t' + dicelement + '=' + '"' + value + '"'
-        line = line + linea
-    return line
+    def __str__(self):
+        line = ""
+        for dic in self.lista_etiq:
+            for elemento in dic:
+                line = line + elemento
+                for dicele in dic[elemento]:
+                    x = dic[elemento]
+                    if (x[dicele] != ""):
+                        linea = '\t' + dicele + '=' + '"' + x[dicele] + '"'
+                        line = line + linea
+            line = line + '\n'
+        print (line)
 
+    def to_json(self, fichero, name):
+        lista_etiq_json = json.dumps(self.lista_etiq)
+        if name == None :
+            name = 'karaoke.py'
+        with open(name, 'w') as fichero_json:
+            json.dump(lista_etiq_json, fichero_json, sort_keys=True, indent=4)
 
-def convertir_a_local(lista_etiquetas):
-    for dic in lista_etiquetas:
-        for elemento in dic:
-            for dicelement in dic[elemento]:
-                x = dic[elemento]
-                value = x[dicelement]
-                value = convert_local(lista_etiquetas, dicelement, value)
-                x[dicelement] = value
-    return lista_etiquetas
-
-
-def guardar_linea_atributos(dic, line):
-    for elemento in dic:
-        line = line + elemento
-        for dicelement in dic[elemento]:
-            x = dic[elemento]
-            value = x[dicelement]
-            line = line_atributo_valor(line, dicelement, value)
-    return line
-
-
-def guardar_linea(lista_etiquetas, line):
-    for dic in lista_etiquetas:
-        line = guardar_linea_atributos(dic, line)
-        line = line + '\n'
-    return line
-
-
-def imprimir(lista_etiquetas):
-    line = ""
-    linea = guardar_linea(lista_etiquetas, line)
-    print (linea)
-
-
-def crear_fichero_json(lista_etiquetas):
-    lista_etiquetas_json = json.dumps(lista_etiquetas)
-    with open('karaoke.json', 'w') as fichero_json:
-        json.dump(lista_etiquetas_json, fichero_json, sort_keys=True, indent=4)
-        # Muestro por pantalla el fichero json
-        print (lista_etiquetas_json)
+    def do_local(self):
+        for dic in self.lista_etiq:
+           for elemento in dic:
+              for dicele in dic[elemento]:
+                 x = dic[elemento]
+                 if (x[dicele] != ""):
+                    if (dicele == "src") and (x[dicele] != "cancion.ogg"):
+                        URL = x[dicele]
+                        filename = URL[URL.rfind("/") + 1:]
+                        data = urlretrieve(URL, filename)
+                        urlcleanup()
+                        x[dicele] = "http://" + data[0]
 
 
 if __name__ == "__main__":
@@ -74,12 +61,11 @@ if __name__ == "__main__":
     except IndexError:
         sys.exit("Usage: python3 karaoke.py file.smil.")
     try:
-        parser = make_parser()
-        cHandler = SmallSMILHandler()
-        parser.setContentHandler(cHandler)
-        parser.parse(open(fichero))
+        obj_karaokelocal = KaraokeLocal(fichero)
     except IOError:
         sys.exit("Usage: python3 karaoke.py file.smil.")
-    cHandler.lista_etiquetas = convertir_a_local(cHandler.lista_etiquetas)
-    imprimir(cHandler.lista_etiquetas)
-    crear_fichero_json(cHandler.lista_etiquetas)
+    obj_karaokelocal.__str__()
+    obj_karaokelocal.to_json(fichero)
+    obj_karaokelocal.do_local(fichero, 'local.json')
+    obj_karaokelocal.to_json()
+    obj_karaokelocal.__str__()
