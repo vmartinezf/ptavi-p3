@@ -66,6 +66,6 @@ if __name__ == "__main__":
         sys.exit("Usage: python3 karaoke.py file.smil.")
     obj_karaokelocal.__str__()
     obj_karaokelocal.to_json(fichero)
-    obj_karaokelocal.do_local(fichero, 'local.json')
-    obj_karaokelocal.to_json()
+    obj_karaokelocal.do_local()
+    obj_karaokelocal.to_json(fichero, 'local.json')
     obj_karaokelocal.__str__()
