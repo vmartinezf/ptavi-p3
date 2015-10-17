@@ -9,17 +9,31 @@ from smallsmilhandler import SmallSMILHandler
 from urllib.request import urlretrieve, urlcleanup
 
 
+def convert_local(lista_etiquetas, dicelement, value):
+    if (dicelement == "src" and value != "cancion.ogg"):
+        URL = value
+        filename = URL[URL.rfind("/") + 1:]
+        data = urlretrieve(URL, filename)
+        urlcleanup()
+        value = "http://" + data[0]
+    return value
+
+
+def line_atributo_valor(line, dicelement, value):
+    if (value != ""):
+        linea = '\t' + dicelement + '=' + '"' + value + '"'
+        line = line + linea
+    return line
+
+
 def convertir_a_local(lista_etiquetas):
     for dic in lista_etiquetas:
         for elemento in dic:
             for dicelement in dic[elemento]:
                 x = dic[elemento]
-                if (dicelement == "src" and x[dicelement] != "cancion.ogg"):
-                    URL = x[dicelement]
-                    filename = URL[URL.rfind("/") + 1:]
-                    data = urlretrieve(URL, filename)
-                    urlcleanup()
-                    x[dicelement] = "http://" + data[0]
+                value = x[dicelement]
+                value = convert_local(lista_etiquetas, dicelement, value)
+                x[dicelement] = value
     return lista_etiquetas
 
 
@@ -28,9 +42,8 @@ def guardar_linea_atributos(dic, line):
         line = line + elemento
         for dicelement in dic[elemento]:
             x = dic[elemento]
-            if (x[dicelement] != ""):
-                linea = '\t' + dicelement + '=' + '"' + x[dicelement] + '"'
-                line = line + linea
+            value = x[dicelement]
+            line = line_atributo_valor(line, dicelement, value)
     return line
 
 
