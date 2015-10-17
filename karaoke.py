@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import json
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
 from smallsmilhandler import SmallSMILHandler
@@ -31,6 +32,14 @@ def imprimir(lista_etiquetas):
     print (linea)
 
 
+def crear_fichero_json(lista_etiquetas):
+    fichero_json = json.dumps(lista_etiquetas)
+    with open('karaoke.json', 'w') as lista_etiquetas_json:
+        json.dump(fichero_json, lista_etiquetas_json)
+        # Muestro por pantalla el fichero json
+        print (fichero_json)
+
+
 if __name__ == "__main__":
     try:
         fichero = sys.argv[1]
@@ -44,3 +53,4 @@ if __name__ == "__main__":
     except IOError:
         sys.exit("Usage: python3 karaoke.py file.smil.")
     imprimir(cHandler.lista_etiquetas)
+    crear_fichero_json(cHandler.lista_etiquetas)
