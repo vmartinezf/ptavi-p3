@@ -6,6 +6,21 @@ import json
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
 from smallsmilhandler import SmallSMILHandler
+from urllib.request import urlretrieve, urlcleanup
+
+
+def convertir_a_local(lista_etiquetas):
+    for dic in lista_etiquetas:
+        for elemento in dic:
+            for dicelement in dic[elemento]:
+                x = dic[elemento]
+                if (dicelement == "src" and x[dicelement] != "cancion.ogg"):
+                    URL = x[dicelement]
+                    filename = URL[URL.rfind("/") + 1:]
+                    data = urlretrieve(URL, filename)
+                    urlcleanup()
+                    x[dicelement] = "http://" + data[0]
+    return lista_etiquetas
 
 
 def guardar_linea_atributos(dic, line):
@@ -52,5 +67,6 @@ if __name__ == "__main__":
         parser.parse(open(fichero))
     except IOError:
         sys.exit("Usage: python3 karaoke.py file.smil.")
+    cHandler.lista_etiquetas = convertir_a_local(cHandler.lista_etiquetas)
     imprimir(cHandler.lista_etiquetas)
     crear_fichero_json(cHandler.lista_etiquetas)
