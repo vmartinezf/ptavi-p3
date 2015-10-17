@@ -33,11 +33,11 @@ def imprimir(lista_etiquetas):
 
 
 def crear_fichero_json(lista_etiquetas):
-    fichero_json = json.dumps(lista_etiquetas)
-    with open('karaoke.json', 'w') as lista_etiquetas_json:
-        json.dump(fichero_json, lista_etiquetas_json)
+    lista_etiquetas_json = json.dumps(lista_etiquetas)
+    with open('karaoke.json', 'w') as fichero_json:
+        json.dump(lista_etiquetas_json, fichero_json, sort_keys=True, indent=4)
         # Muestro por pantalla el fichero json
-        print (fichero_json)
+        print (lista_etiquetas_json)
 
 
 if __name__ == "__main__":
