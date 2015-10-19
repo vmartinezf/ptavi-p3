@@ -34,7 +34,7 @@ class KaraokeLocal(SmallSMILHandler):
             line = line + '\n'
         print (line)
 
-    def to_json(self,fichero, name =""):
+    def to_json(self, fichero, name=""):
         lista_etiq_json = json.dumps(self.lista_etiq)
         if (name == ""):
             name = fichero.split('.')[0] + '.json'
