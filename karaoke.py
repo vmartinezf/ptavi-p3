@@ -15,7 +15,6 @@ class KaraokeLocal(SmallSMILHandler):
         """
         Parseará el fichero y obtendrá etiquetas
         """
-        self.fichero = fichero
         parser = make_parser()
         cHandler = SmallSMILHandler()
         parser.setContentHandler(cHandler)
@@ -35,8 +34,10 @@ class KaraokeLocal(SmallSMILHandler):
             line = line + '\n'
         print (line)
 
-    def to_json(self, name):
+    def to_json(self,fichero, name =""):
         lista_etiq_json = json.dumps(self.lista_etiq)
+        if (name == ""):
+            name = fichero.split('.')[0] + '.json'
         with open(name, 'w') as fichero_json:
             json.dump(lista_etiq_json, fichero_json, sort_keys=True, indent=4)
 
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     except IOError:
         sys.exit("Usage: python3 karaoke.py file.smil.")
     obj_karaokelocal.__str__()
-    obj_karaokelocal.to_json('karaoke.json')
+    obj_karaokelocal.to_json(fichero)
     obj_karaokelocal.do_local()
-    obj_karaokelocal.to_json('local.json')
+    obj_karaokelocal.to_json(fichero, 'local.json')
     obj_karaokelocal.__str__()
