@@ -27,8 +27,10 @@ class KaraokeLocal(SmallSMILHandler):
             llave = list(dic.keys())[0]
             line = line + llave
             for elemento in dic[llave]:
-                if dic[llave][elemento]:
-                    linea = '\t' + elemento + '=' + '"' +dic[llave][elemento] + '"'
+                value = dic[llave][elemento]
+                if value:
+                    value = dic[llave][elemento]
+                    linea = '\t' + elemento + '=' + '"' + value + '"'
                     line = line + linea
             line = line + '\n'
         print (line)
@@ -41,12 +43,13 @@ class KaraokeLocal(SmallSMILHandler):
             json.dump(lista_etiq_json, fichero_json, sort_keys=True, indent=4)
 
     def do_local(self):
-       for dic in self.lista_etiq:
+        for dic in self.lista_etiq:
             llave = list(dic.keys())[0]
             for elemento in dic[llave]:
-                if dic[llave][elemento]:
-                    if (elemento == "src") and (dic[llave][elemento] != "cancion.ogg"):
-                        URL = dic[llave][elemento]
+                value = dic[llave][elemento]
+                if value:
+                    if (elemento == "src") and (value != "cancion.ogg"):
+                        URL = value
                         filename = URL[URL.rfind("/") + 1:]
                         data = urlretrieve(URL, filename)
                         urlcleanup()
