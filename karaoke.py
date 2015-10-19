@@ -24,35 +24,33 @@ class KaraokeLocal(SmallSMILHandler):
     def __str__(self):
         line = ""
         for dic in self.lista_etiq:
-            for elemento in dic:
-                line = line + elemento
-                for dicele in dic[elemento]:
-                    x = dic[elemento]
-                    if (x[dicele] != ""):
-                        linea = '\t' + dicele + '=' + '"' + x[dicele] + '"'
-                        line = line + linea
+            llave = list(dic.keys())[0]
+            line = line + llave
+            for elemento in dic[llave]:
+                if dic[llave][elemento]:
+                    linea = '\t' + elemento + '=' + '"' +dic[llave][elemento] + '"'
+                    line = line + linea
             line = line + '\n'
         print (line)
 
     def to_json(self, fichero, name=""):
         lista_etiq_json = json.dumps(self.lista_etiq)
-        if (name == ""):
+        if not name:
             name = fichero.split('.')[0] + '.json'
         with open(name, 'w') as fichero_json:
             json.dump(lista_etiq_json, fichero_json, sort_keys=True, indent=4)
 
     def do_local(self):
-        for dic in self.lista_etiq:
-            for elemento in dic:
-                for dicele in dic[elemento]:
-                    x = dic[elemento]
-                    if (x[dicele] != ""):
-                        if (dicele == "src") and (x[dicele] != "cancion.ogg"):
-                            URL = x[dicele]
-                            filename = URL[URL.rfind("/") + 1:]
-                            data = urlretrieve(URL, filename)
-                            urlcleanup()
-                            x[dicele] = "http://" + data[0]
+       for dic in self.lista_etiq:
+            llave = list(dic.keys())[0]
+            for elemento in dic[llave]:
+                if dic[llave][elemento]:
+                    if (elemento == "src") and (dic[llave][elemento] != "cancion.ogg"):
+                        URL = dic[llave][elemento]
+                        filename = URL[URL.rfind("/") + 1:]
+                        data = urlretrieve(URL, filename)
+                        urlcleanup()
+                        dic[llave][elemento] = data[0]
 
 
 if __name__ == "__main__":
